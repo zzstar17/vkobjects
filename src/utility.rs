@@ -17,6 +17,10 @@ pub unsafe fn i8_array_as_cstr(arr: &[i8]) -> Result<&CStr, FromBytesUntilNulErr
   unsafe { CStr::from_bytes_until_nul(std::mem::transmute::<&[i8], &[u8]>(arr)) }
 }
 
+pub unsafe fn any_as_u8_slice<T: Sized>(p: &T) -> &[u8] {
+  unsafe { std::slice::from_raw_parts((p as *const T) as *const u8, std::mem::size_of::<T>()) }
+}
+
 // power is the actual power of 2 (1, 2, 4, 8, 16...)
 #[inline]
 pub fn round_down_to_power_of_2_u64(n: u64, power: u64) -> u64 {
@@ -58,7 +62,7 @@ impl<T, E> OnErr<T, E> for Result<T, E> {
 
 #[macro_export]
 macro_rules! const_flag_bitor {
-  ($t:ty, $x:expr, $($y:expr),+) => {
+  ($t:ty => $x:expr, $($y:expr),+) => {
     // ash flags don't implement const bitor
     <$t>::from_raw(
       $x.as_raw() $(| $y.as_raw())+,

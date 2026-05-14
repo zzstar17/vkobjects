@@ -1,11 +1,10 @@
 pub mod device_destroyable;
-pub mod utility;
 pub mod errors;
+pub mod utility;
 
-pub use device_destroyable::DeviceManuallyDestroyed;
-pub use device_destroyable::ManuallyDestroyed;
+pub use device_destroyable::{DeviceManuallyDestroyed, ManuallyDestroyed};
 
 #[cfg(test)]
 mod tests {
-    // use super::*;
+  // use super::*;
 }

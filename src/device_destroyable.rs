@@ -47,8 +47,8 @@ macro_rules! destroy {
 #[macro_export]
 macro_rules! fill_destroyable_array_with_expression {
   ($device:expr, $ex:expr, $arr_size:tt) => {{
-    use vkobjects::DeviceManuallyDestroyed;
     use std::mem::MaybeUninit;
+    use vkobjects::DeviceManuallyDestroyed;
 
     let mut tmp: [MaybeUninit<_>; $arr_size] = unsafe { MaybeUninit::uninit().assume_init() };
     let mut i = 0;
@@ -132,11 +132,7 @@ macro_rules! fill_destroyable_array_with_expression_using_default {
 macro_rules! fill_destroyable_array_from_iter {
   ($device:tt, $iter:expr, $arr_size:tt) => {{
     let mut iter = $iter; // make sure $iter isn't creating new iterators every time
-    vkobjects::fill_destroyable_array_with_expression!(
-      $device,
-      iter.next().unwrap(),
-      $arr_size
-    )
+    vkobjects::fill_destroyable_array_with_expression!($device, iter.next().unwrap(), $arr_size)
   }};
 }
 

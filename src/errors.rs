@@ -21,7 +21,9 @@ impl From<vk::Result> for OutOfMemoryError {
 }
 
 #[derive(thiserror::Error, Debug, Clone, Copy)]
-#[error("Vulkan returned ERROR_DEVICE_LOST. See https://docs.vulkan.org/spec/latest/chapters/devsandqueues.html#devsandqueues-lost-device")]
+#[error(
+  "Vulkan returned ERROR_DEVICE_LOST. See https://docs.vulkan.org/spec/latest/chapters/devsandqueues.html#devsandqueues-lost-device"
+)]
 pub struct DeviceIsLost;
 
 #[derive(thiserror::Error, Debug, Clone, Copy)]
