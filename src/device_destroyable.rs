@@ -158,10 +158,30 @@ impl<T: DeviceManuallyDestroyed> DeviceManuallyDestroyed for [T] {
   }
 }
 
+impl<T: DeviceManuallyDestroyed> DeviceManuallyDestroyed for &[T] {
+  unsafe fn destroy_self(&self, device: &ash::Device) {
+    unsafe {
+      for value in self.iter() {
+        value.destroy_self(device);
+      }
+    }
+  }
+}
+
 impl<T: DeviceManuallyDestroyed> DeviceManuallyDestroyed for Box<[T]> {
   unsafe fn destroy_self(&self, device: &ash::Device) {
     unsafe {
       for value in self.iter() {
+        value.destroy_self(device);
+      }
+    }
+  }
+}
+
+impl<T: DeviceManuallyDestroyed> DeviceManuallyDestroyed for Option<T> {
+  unsafe fn destroy_self(&self, device: &ash::Device) {
+    unsafe {
+      if let Some(value) = self {
         value.destroy_self(device);
       }
     }
@@ -268,6 +288,14 @@ impl DeviceManuallyDestroyed for vk::CommandPool {
   unsafe fn destroy_self(&self, device: &ash::Device) {
     unsafe {
       device.destroy_command_pool(*self, None);
+    }
+  }
+}
+
+impl DeviceManuallyDestroyed for vk::PipelineLayout {
+  unsafe fn destroy_self(&self, device: &ash::Device) {
+    unsafe {
+      device.destroy_pipeline_layout(*self, None);
     }
   }
 }
